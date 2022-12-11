@@ -175,6 +175,7 @@ public class DaySeven {
             this.filteredChildren = filteredChildren;
             return this;
         }
+        
         public ArrayList<FileSystemEntity> getFilterResult() {
             return filteredChildren;
         }
