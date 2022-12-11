@@ -178,7 +178,6 @@ public class DaySeven {
         public ArrayList<FileSystemEntity> getFilterResult() {
             return filteredChildren;
         }
-
     }
 
     public static class CommandLineInterface {
