@@ -291,7 +291,6 @@ public class DaySeven {
             OptionalInt dirToDeleteSize = root.filterDirectoriesBySize(neededSpace, Integer.MAX_VALUE).getFilterResult()
                     .stream().mapToInt(dir -> dir.getSizeOfChildren()).min();
             System.out.println("Part 2: " + dirToDeleteSize.getAsInt());
-
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
