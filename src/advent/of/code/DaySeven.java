@@ -147,17 +147,13 @@ public class DaySeven {
 
     public static class DirectoryFilter {
         protected Directory directory;
-        protected ArrayList<FileSystemEntity> filteredChildren;
+        protected ArrayList<FileSystemEntity> filteredChildren = new ArrayList<>();
 
         public DirectoryFilter(Directory directory) {
             this.directory = directory;
         }
 
         public DirectoryFilter filterDirectoriesBySize(int sizeRangeStart, int sizeRangeEnd) {
-            if (filteredChildren == null) {
-                filteredChildren = new ArrayList<>();
-            }
-
             for (FileSystemEntity dir : directory.getChildren()) {
                 if (dir instanceof Directory) {
                     if (dir.getSizeOfChildren() >= sizeRangeStart && dir.getSizeOfChildren() <= sizeRangeEnd) {
@@ -175,7 +171,7 @@ public class DaySeven {
             this.filteredChildren = filteredChildren;
             return this;
         }
-        
+
         public ArrayList<FileSystemEntity> getFilterResult() {
             return filteredChildren;
         }
