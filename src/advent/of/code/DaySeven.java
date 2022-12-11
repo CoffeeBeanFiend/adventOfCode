@@ -212,8 +212,6 @@ public class DaySeven {
                 handleFileRecord(match);
             } else if (pattern == directoryRecord) {
                 handleDirectoryRecord(match);
-            } else {
-                System.out.println("\"" + command + "\" unknown");
             }
         }
 
