@@ -111,7 +111,6 @@ public class DaySeven {
 
     public static class Directory extends AbstractFileSystemEntity {
         protected ArrayList<FileSystemEntity> children = new ArrayList<>();
-        static protected ArrayList<FileSystemEntity> filteredChildren;
 
         @Override
         public boolean isFile() {
@@ -125,7 +124,6 @@ public class DaySeven {
 
         @Override
         public FileSystemEntity addChild(FileSystemEntity entity) {
-            resetFilterResult();
             getChildren().add(entity);
             return this;
         }
@@ -145,32 +143,42 @@ public class DaySeven {
         public ArrayList<FileSystemEntity> getChildren() {
             return children;
         }
+    }
 
-        public Directory filterDirectoriesBySize(int sizeRangeStart, int sizeRangeEnd) {
-            if (Directory.filteredChildren == null) {
-                Directory.filteredChildren = new ArrayList<>();
+    public static class DirectoryFilter {
+        protected Directory directory;
+        protected ArrayList<FileSystemEntity> filteredChildren;
+
+        public DirectoryFilter(Directory directory) {
+            this.directory = directory;
+        }
+
+        public DirectoryFilter filterDirectoriesBySize(int sizeRangeStart, int sizeRangeEnd) {
+            if (filteredChildren == null) {
+                filteredChildren = new ArrayList<>();
             }
 
-            for (FileSystemEntity dir : getChildren()) {
+            for (FileSystemEntity dir : directory.getChildren()) {
                 if (dir instanceof Directory) {
                     if (dir.getSizeOfChildren() >= sizeRangeStart && dir.getSizeOfChildren() <= sizeRangeEnd) {
-                        Directory.filteredChildren.add(dir);
+                        filteredChildren.add(dir);
                     }
-                    ((Directory) dir).filterDirectoriesBySize(sizeRangeStart, sizeRangeEnd);
+                    (new DirectoryFilter((Directory) dir)).setFilterResult(getFilterResult())
+                            .filterDirectoriesBySize(sizeRangeStart, sizeRangeEnd);
                 }
             }
 
             return this;
         }
 
-        public ArrayList<FileSystemEntity> getFilterResult() {
-            return Directory.filteredChildren;
-        }
-
-        public Directory resetFilterResult() {
-            Directory.filteredChildren = null;
+        protected DirectoryFilter setFilterResult(ArrayList<FileSystemEntity> filteredChildren) {
+            this.filteredChildren = filteredChildren;
             return this;
         }
+        public ArrayList<FileSystemEntity> getFilterResult() {
+            return filteredChildren;
+        }
+
     }
 
     public static class CommandLineInterface {
@@ -276,7 +284,7 @@ public class DaySeven {
             }
 
             // Part 1
-            ArrayList<FileSystemEntity> result = root
+            ArrayList<FileSystemEntity> result = new DirectoryFilter(root)
                     .filterDirectoriesBySize(0, 100000)
                     .getFilterResult();
 
@@ -286,10 +294,12 @@ public class DaySeven {
             // Part 2
             final int TOTAL_SPACE  = 70000000;
             final int TOTAL_UNUSED_SPACE_NEEDED = 30000000;
-            root.resetFilterResult();
             int neededSpace = TOTAL_UNUSED_SPACE_NEEDED - (TOTAL_SPACE - root.getSizeOfChildren());
-            OptionalInt dirToDeleteSize = root.filterDirectoriesBySize(neededSpace, Integer.MAX_VALUE).getFilterResult()
-                    .stream().mapToInt(dir -> dir.getSizeOfChildren()).min();
+            OptionalInt dirToDeleteSize = new DirectoryFilter(root)
+                    .filterDirectoriesBySize(neededSpace, Integer.MAX_VALUE)
+                    .getFilterResult()
+                    .stream()
+                    .mapToInt(dir -> dir.getSizeOfChildren()).min();
             System.out.println("Part 2: " + dirToDeleteSize.getAsInt());
         } catch (IOException e) {
             System.out.println(e.getMessage());
