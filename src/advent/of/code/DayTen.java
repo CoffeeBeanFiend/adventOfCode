@@ -92,7 +92,6 @@ public class DayTen {
                     throw new RuntimeException("Invalid line in input: " + line);
                 }
             });
-            cpu.getSignalStrength();
             System.out.println("Part 1:" + cpu.getSignalStrength().stream().mapToInt(i -> i).sum());
             System.out.println("Part 2:");
             System.out.println();
