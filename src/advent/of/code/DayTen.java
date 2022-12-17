@@ -18,7 +18,7 @@ public class DayTen {
         CPU() {
             registerHistory.add(register);
         }
-        
+
         public CPU executeNoop() {
             nextCycle();
             return this;
@@ -100,6 +100,5 @@ public class DayTen {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
-
     }
 }
