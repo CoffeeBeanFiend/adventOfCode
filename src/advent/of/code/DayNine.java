@@ -288,7 +288,7 @@ public class DayNine {
                 System.out.println(knot);
             });
 
-            System.out.println("Part 1:" + headTailRecorder.getPositionsCovered());
+            System.out.println("Part 2:" + headTailRecorder.getPositionsCovered());
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
